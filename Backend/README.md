@@ -91,7 +91,7 @@ The endpoint accepts a JSON request body with the following fields:
 | Status Code | Description |
 |-------------|-------------|
 | `201` | User successfully created and token generated |
-| `400` | Bad Request - Validation failed (missing fields, invalid format, or constraints not met) |
+| `400` | Bad Request - Validation failed (missing fields, invalid for mat, or constraints not met) |
 
 ---
 
@@ -151,5 +151,157 @@ All validations are performed using `express-validator` middleware:
 - Password is hashed using bcrypt with 10 salt rounds before storage
 - The returned JWT token should be stored client-side and included in subsequent authenticated requests
 - Email addresses are case-sensitive and must be unique in the system
+- The password field is not returned in the response for security reasons
+
+---
+
+# User Login API Documentation
+
+## Endpoints
+
+### POST /users/login
+
+User login endpoint that authenticates a user and returns an authentication token.
+
+---
+
+## Description
+
+This endpoint allows users to log in to their account by providing their email and password. The password is compared with the hashed password stored in the database, and upon successful authentication, a JWT authentication token is generated and returned to the client.
+
+---
+
+## Request Body
+
+The endpoint accepts a JSON request body with the following fields:
+
+```json
+{
+  "email": "string (required)",
+  "password": "string (required)"
+}
+```
+
+### Required Fields
+
+| Field | Type | Constraints | Description |
+|-------|------|-----------|-------------|
+| `email` | string | Valid email format, min 5 characters | User's email address |
+| `password` | string | Min 6 characters | User's password |
+
+---
+
+## Response
+
+### Success Response (200 OK)
+
+**Status Code:** `200`
+
+**Response Body:**
+```json
+{
+  "user": {
+    "_id": "mongodb_id",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john@example.com",
+    "socketId": null
+  },
+  "token": "jwt_token_string"
+}
+```
+
+### Error Response (400 Bad Request)
+
+**Status Code:** `400`
+
+**Response Body (Validation Errors):**
+```json
+{
+  "errors": [
+    {
+      "msg": "Please use a valid email address.",
+      "param": "email",
+      "location": "body"
+    },
+    {
+      "msg": "Password must be at least 6 characters long",
+      "param": "password",
+      "location": "body"
+    }
+  ]
+}
+```
+
+### Error Response (401 Unauthorized)
+
+**Status Code:** `401`
+
+**Response Body (Invalid Credentials):**
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+---
+
+## Status Codes
+
+| Status Code | Description |
+|-------------|-------------|
+| `200` | User successfully authenticated and token generated |
+| `400` | Bad Request - Validation failed (missing fields, invalid format, or constraints not met) |
+| `401` | Unauthorized - Invalid email or password |
+
+---
+
+## Example Usage
+
+### cURL
+```bash
+curl -X POST http://localhost:PORT/users/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "password": "password123"
+  }'
+```
+
+### JavaScript (Fetch)
+```javascript
+fetch('http://localhost:PORT/users/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    email: 'john@example.com',
+    password: 'password123'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+```
+
+---
+
+## Validation Rules
+
+All validations are performed using `express-validator` middleware:
+
+- **Email:** Must be a valid email address and at least 5 characters long
+- **Password:** Must be at least 6 characters long
+
+---
+
+## Notes
+
+- Password comparison uses bcrypt to secure password verification
+- The returned JWT token should be stored client-side and included in subsequent authenticated requests
+- Email and password mismatch returns the same generic error message for security reasons (does not reveal if user exists)
 - The password field is not returned in the response for security reasons
 
