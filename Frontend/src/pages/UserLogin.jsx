@@ -39,7 +39,8 @@ const UserLogin = () => {
   return (
     <div className='p-7 h-screen flex flex-col justify-between'>
       <div>
-        <img className='w-16 mb-10' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYQy-OIkA6In0fTvVwZADPmFFibjmszu2A0g&s" alt="" />
+        {/* <img className='w-16 mb-10' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYQy-OIkA6In0fTvVwZADPmFFibjmszu2A0g&s" alt="GoFleet" /> */}
+        <img className='w-20 mb-10' src='https://tse4.mm.bing.net/th/id/OIP.6Vwu6wQagpNpFvgCvXJC3wAAAA?pid=Api&P=0&h=180' alt='GoFleet' />
 
         <form onSubmit={(e) => {
           submitHandler(e)

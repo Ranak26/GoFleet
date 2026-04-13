@@ -23,6 +23,7 @@ const CaptainHome = () => {
     const { captain } = useContext(CaptainDataContext)
 
     useEffect(() => {
+        if (!captain) return
         socket.emit('join', {
             userId: captain._id,
             userType: 'captain'
