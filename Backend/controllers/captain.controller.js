@@ -1,6 +1,6 @@
 const captainModel = require('../models/captain.model');
 const captainService = require('../services/captain.service');
-const blackListTokenModel = require('../models/blacklistToken.model');
+const blackListTokenModel = require('../models/blackListToken.model');
 const { validationResult } = require('express-validator');
 
 
@@ -10,7 +10,7 @@ module.exports.registerCaptain = async (req, res, next) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-
+    console.log("Received registration data:", req.body);
     const { fullname, email, password, vehicle } = req.body;
 
     const isCaptainAlreadyExist = await captainModel.findOne({ email });
